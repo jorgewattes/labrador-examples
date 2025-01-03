@@ -24,19 +24,16 @@ O ADC do AM335x suporta até 8 canais de entrada (AIN0 a AIN7), permitindo leitu
 | 0x70     | 0x44E0D070            | Configuração de clock                       | Frequência do clock                   | Define a frequência do clock do ADC para conversão.                                                                                                          |
 | 0x74     | 0x44E0D074            | Configuração de tensão de referência        | Níveis de tensão                      | Configura o nível de tensão de referência (VREFP e VREFN).                                                                                                   |
 
-## Função de Canais (AIN)
-Os canais analógicos são referenciados como **AIN0** a **AIN7**. Cada canal pode ser configurado para medições independentes.
-
-| Canal    | Pino GPIO Associado | Função                                     | Descrição                                                                    |
-|----------|----------------------|--------------------------------------------|-------------------------------------------------------------------------------|
-| AIN0     | GPIO32               | Entrada analógica 0                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN1     | GPIO33               | Entrada analógica 1                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN2     | GPIO34               | Entrada analógica 2                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN3     | GPIO35               | Entrada analógica 3                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN4     | GPIO36               | Entrada analógica 4                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN5     | GPIO37               | Entrada analógica 5                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN6     | GPIO38               | Entrada analógica 6                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
-| AIN7     | GPIO39               | Entrada analógica 7                        | Usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| Canal    | Pino Físico (Header) | Função GPIO Associada   | Descrição                                                                    |
+|----------|-----------------------|-------------------------|-------------------------------------------------------------------------------|
+| AIN0     | 9                    | GPIOC0                 | Entrada analógica 0, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN1     | 11                   | GPIOC1                 | Entrada analógica 1, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN2     | 13                   | GPIOC4                 | Entrada analógica 2, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN3     | 33                   | GPIOB16                | Entrada analógica 3, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN4     | 35                   | GPIOB15                | Entrada analógica 4, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN5     | 37                   | GPIOB10                | Entrada analógica 5, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN6     | 39                   | GPIOB0                 | Entrada analógica 6, usada para medições de sinais analógicos conectados ao pino correspondente.  |
+| AIN7     | 7                    | GPIOB1                 | Entrada analógica 7, usada para medições de sinais analógicos conectados ao pino correspondente.  |
 
 ## Observações Adicionais
 1. **Tensão de Referência (VREF):**
@@ -71,7 +68,7 @@ adc_mmio = MMIO(ADC_BASE, ADC_SIZE)
 adc_mmio.write32(0x04, 0x01)  # Configuração básica do ADC
 
 # Selecionar canal AIN0
-adc_mmio.write32(0x48, 0x00)  # Selecionar canal 0 (AIN0)
+adc_mmio.write32(0x48, 0x07)  # Selecionar canal 7 (AIN7) / GPIO-B1  (header-7)
 
 try:
    while(1):
@@ -80,7 +77,7 @@ try:
       adc_value = adc_mmio.read32(0x58)  # Ler o valor convertido do FIFO0
 
       # Imprimir o valor lido
-      print("ADC Value (AIN0):", adc_value)
+      print("ADC Value (AIN7:", adc_value)
 finally:
    # Fechar o mapeamento de memória
    adc_mmio.close()

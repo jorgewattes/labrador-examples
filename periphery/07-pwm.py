@@ -38,20 +38,26 @@
     pwm.close()
 """
 
-
+import time
 from periphery import PWM
 
-# Open PWM chip 0, channel 10
-pwm = PWM(0, 10)
 
-# Set frequency to 1 kHz
-pwm.frequency = 1e3
-# Set duty cycle to 75%
-pwm.duty_cycle = 0.75
-
+# Open PWM chip 2, channel 1 - GPIO-A27 (header-5)
+pwm = PWM(2, 1)
+pwm.frequency = 1e3 # Set frequency to 1 kHz
+pwm.duty_cycle = 0.75 # Set duty cycle to 75%
 pwm.enable()
 
-# Change duty cycle to 50%
-pwm.duty_cycle = 0.50
+inc=True
 
-pwm.close()
+try:
+    while(1):
+        if(inc):
+            pwm.duty_cycle = pwm.duty_cycle + 0.10
+            inc=False if pwm.duty_cycle>=1 else True
+        else:
+            pwm.duty_cycle = pwm.duty_cycle - 0.10
+            inc=True if pwm.duty_cycle<=0 else False
+        time.sleep(1)
+finally:
+    pwm.close()
