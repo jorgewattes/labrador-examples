@@ -12,9 +12,7 @@ import time
 led = GPIO("/dev/gpiochip3", 17, "in") # GPIO-D17
 
 # Open Button - GPIO /dev/gpiochip0 line 3 with output direction
-button = GPIO("/dev/gpiochip4", 3, "out") # GPIO-E3 (Header-3)
-# Set pull-up / pull-down internal resistor
-button.bias("pull_up") 
+button = GPIO("/dev/gpiochip4", 3, "out", bias="pull_up") # GPIO-E3 (Header-3)
 
 try:
     while(1):
