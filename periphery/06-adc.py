@@ -56,6 +56,7 @@ O ADC do AM335x suporta até 8 canais de entrada (AIN0 a AIN7), permitindo leitu
 """
 
 from periphery import MMIO
+import time
 
 # Endereço base e tamanho da região do ADC
 ADC_BASE = 0x44E0D000
@@ -78,6 +79,7 @@ try:
 
       # Imprimir o valor lido
       print("ADC Value (AIN7:", adc_value)
+      time.sleep(1)
 finally:
    # Fechar o mapeamento de memória
    adc_mmio.close()
