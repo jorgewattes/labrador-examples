@@ -76,6 +76,10 @@
 
 from periphery import MMIO
 import time
+import os, sys
+if os.geteuid() != 0:
+    os.execvp('sudo', ['sudo', 'python3'] + sys.argv)
+
 
 rtc_mmio = MMIO(0x44E3E000, 0x1000)
 rtc_secs = rtc_mmio.read32(0x00)    #Offset do registro de segundos.
