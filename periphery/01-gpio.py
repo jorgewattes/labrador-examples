@@ -50,7 +50,6 @@ Com essas configurações, as permissões para o GPIO serão aplicadas automatic
 from periphery import GPIO
 import time
 
-#GPIO-D17 - LED (BLUE)
 #/dev/gpiochip0 - A
 #/dev/gpiochip1 - B
 #/dev/gpiochip2 - C
@@ -58,7 +57,7 @@ import time
 #/dev/gpiochip4 - E
 
 # Open LED - GPIO /dev/gpiochip0 line 17 with input direction
-led = GPIO("/dev/gpiochip3", 17, "out") # GPIO-D17
+led = GPIO("/dev/gpiochip4", 2, "out") # GPIO-E2 (Header-5)
 
 # Open Button - GPIO /dev/gpiochip0 line 3 with output direction
 button = GPIO("/dev/gpiochip4", 3, "in", bias="pull_up") # GPIO-E3 (Header-3)
