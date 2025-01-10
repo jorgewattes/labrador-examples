@@ -45,6 +45,6 @@ serial.write(b"Hello World!")
 try:
     while(1):
         buf = serial.read(128, 0.5)
-        print("read {:d} bytes: _{:s}_".format(len(buf), buf))
+        print(buf)
 finally:
     serial.close()
