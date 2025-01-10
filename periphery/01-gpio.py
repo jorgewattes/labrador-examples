@@ -63,7 +63,9 @@ led = GPIO("/dev/gpiochip4", 2, "out") # GPIO-E2 (Header-5)
 button = GPIO("/dev/gpiochip4", 3, "in", bias="pull_up") # GPIO-E3 (Header-3)
 
 try:
-    while(1):    
+    while(1):
+        led.write(not led.read()) 
+        time.sleep(0.3) # Delay to bounce filter    
         if(not button.read()): # If button pressed:
             led.write(not led.read()) 
             time.sleep(0.3) # Delay to bounce filter
