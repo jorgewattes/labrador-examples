@@ -68,23 +68,24 @@ ADC_SIZE = 0x1000
 # Mapear a memória do ADC
 adc_mmio = MMIO(ADC_BASE, ADC_SIZE)
 
-
+# Configurar o ADC (habilitar e configurar tensão de referência)
+adc_mmio.write32(0x40, 0x01)  # Configuração básica do ADC
+# Selecionar canal AIN0
+adc_mmio.write32(0x64, 0x00)  # Selecionar canal 7 (AIN7) / GPIO-B1  (header-7)
 
 try:
    while(1):
-      # Configurar o ADC (habilitar e configurar tensão de referência)
-      adc_mmio.write32(0x04, 0x01)  # Configuração básica do ADC
 
-      # Selecionar canal AIN0
-      adc_mmio.write32(0x48, 0x00)  # Selecionar canal 7 (AIN7) / GPIO-B1  (header-7)
-      # Iniciar uma conversão e ler o valor
-      adc_mmio.write32(0x50, 0x01)  # Configurar step para iniciar conversão
-      adc_value = adc_mmio.read32(0x58)  # Ler o valor convertido do FIFO0
+
+
+      # # Iniciar uma conversão e ler o valor
+      # adc_mmio.write32(0x50, 0x01)  # Configurar step para iniciar conversão
+      adc_value = adc_mmio.read32(0x100)  # Ler o valor convertido do FIFO0
 
       # Imprimir o valor lido
       print("ADC Value (AIN7):", adc_value)
       time.sleep(1)
-      
+
 finally:
    # Fechar o mapeamento de memória
    adc_mmio.close()
