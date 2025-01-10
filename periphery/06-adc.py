@@ -60,7 +60,7 @@ import time
 import os, sys
 if os.geteuid() != 0:
     os.execvp('sudo', ['sudo', 'python3'] + sys.argv)
-    
+
 # Endereço base e tamanho da região do ADC
 ADC_BASE = 0x44E0D000
 ADC_SIZE = 0x1000
@@ -72,7 +72,7 @@ adc_mmio = MMIO(ADC_BASE, ADC_SIZE)
 adc_mmio.write32(0x04, 0x01)  # Configuração básica do ADC
 
 # Selecionar canal AIN0
-adc_mmio.write32(0x48, 0x07)  # Selecionar canal 7 (AIN7) / GPIO-B1  (header-7)
+adc_mmio.write32(0x48, 0x00)  # Selecionar canal 7 (AIN7) / GPIO-B1  (header-7)
 
 try:
    while(1):
@@ -81,7 +81,7 @@ try:
       adc_value = adc_mmio.read32(0x58)  # Ler o valor convertido do FIFO0
 
       # Imprimir o valor lido
-      print("ADC Value (AIN7:", adc_value)
+      print("ADC Value (AIN7):", adc_value)
       time.sleep(1)
 finally:
    # Fechar o mapeamento de memória
