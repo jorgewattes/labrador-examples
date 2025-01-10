@@ -61,31 +61,26 @@ import os, sys
 if os.geteuid() != 0:
     os.execvp('sudo', ['sudo', 'python3'] + sys.argv)
 
-# Endereço base e tamanho da região do ADC
-ADC_BASE = 0x44E0D000
-ADC_SIZE = 0x1000
+# Base de endereço e offset do ADC
+ADC_BASE_ADDR = 0x44E0D000  # Exemplo para AM335x
+ADC_STEPENABLE_OFFSET = 0x54  # Offset do registrador STEPENABLE
+ADC_FIFO0DATA_OFFSET = 0x100  # Offset do FIFO0DATA (resultado ADC)
 
-# Mapear a memória do ADC
-adc_mmio = MMIO(ADC_BASE, ADC_SIZE)
+# Mapear a memória do ADC (tamanho típico de 4KB)
+mmio = MMIO(ADC_BASE_ADDR, 0x1000)
 
-# Configurar o ADC (habilitar e configurar tensão de referência)
-adc_mmio.write32(0x40, 0x01)  # Configuração básica do ADC
-# Selecionar canal AIN0
-adc_mmio.write32(0x64, 0x00)  # Selecionar canal 7 (AIN7) / GPIO-B1  (header-7)
+# Habilitar o ADC (ajustar conforme o datasheet)
+mmio.write32(ADC_STEPENABLE_OFFSET, 0x1)  # Habilita o passo 1 do ADC
 
 try:
    while(1):
 
-
-
-      # # Iniciar uma conversão e ler o valor
-      # adc_mmio.write32(0x50, 0x01)  # Configurar step para iniciar conversão
-      adc_value = adc_mmio.read32(0x100)  # Ler o valor convertido do FIFO0
-
-      # Imprimir o valor lido
-      print("ADC Value (AIN7):", adc_value)
-      time.sleep(1)
+ # Ler dados do FIFO0DATA
+    adc_value = mmio.read32(ADC_FIFO0DATA_OFFSET) & 0xFFF  # Considerar apenas os 12 bits de dados
+    voltage = (adc_value / 4096.0) * 3.0  # Converter para tensão (0 a 3V)
+    print(f"ADC Value: {adc_value}, Voltage: {voltage:.3f} V")
+    time.sleep(1)  # Taxa de leitura
 
 finally:
    # Fechar o mapeamento de memória
-   adc_mmio.close()
+   mmio.close()
