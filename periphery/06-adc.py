@@ -57,7 +57,10 @@ O ADC do AM335x suporta até 8 canais de entrada (AIN0 a AIN7), permitindo leitu
 
 from periphery import MMIO
 import time
-
+import os, sys
+if os.geteuid() != 0:
+    os.execvp('sudo', ['sudo', 'python3'] + sys.argv)
+    
 # Endereço base e tamanho da região do ADC
 ADC_BASE = 0x44E0D000
 ADC_SIZE = 0x1000
