@@ -1,6 +1,4 @@
 """
-
-
 Para ativar o PWM no channel 0 do pwmchip0:
     echo 0 > /sys/class/pwm/pwmchip0/export
     echo 20000000 > /sys/class/pwm/pwmchip0/pwm0/period  # Período de 20ms (50Hz)
