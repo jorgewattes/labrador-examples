@@ -29,88 +29,45 @@ SSD1306
 # i2c.close()
 
 
-from periphery import I2C
+from periphery import Serial
 
-# Endereço I2C do display SSD1306
-I2C_ADDRESS = 0x3C
+def main():
+    # Configure o dispositivo UART (substitua '/dev/ttyS0' pelo dispositivo correto no Labrador)
+    uart_device = "/dev/ttyS0"
+    baudrate = 9600
 
-# Configuração do barramento I2C
-i2c = I2C("/dev/i2c-2")
+    # Inicializa a UART
+    try:
+        uart = Serial(uart_device, baudrate)
+        print(f"UART configurada no dispositivo {uart_device} a {baudrate} baud.")
 
-# Fonte simples de 5x8 pixels para caracteres ASCII (0x20 a 0x7F)
-FONT_5x8 = {
-    " ": [0x00, 0x00, 0x00, 0x00, 0x00],
-    "H": [0x7C, 0x12, 0x12, 0x7C, 0x00],
-    "e": [0x3C, 0x4A, 0x4A, 0x30, 0x00],
-    "l": [0x00, 0x00, 0x7E, 0x00, 0x00],
-    "o": [0x3C, 0x42, 0x42, 0x3C, 0x00],
-    "W": [0x7C, 0x02, 0x02, 0x7C, 0x00],
-    "r": [0x00, 0x7C, 0x12, 0x12, 0x00],
-    "d": [0x3C, 0x42, 0x42, 0x3C, 0x00],
-    "!": [0x00, 0x00, 0x5E, 0x00, 0x00]
-}
+        # Recebe os dados do usuário
+        data_to_send = input("Digite os dados a serem enviados no loopback: ").encode('utf-8')
 
-def ssd1306_init():
-    """Inicializa o display SSD1306."""
-    commands = [
-        0xAE,  # Display OFF
-        0xD5, 0x80,  # Set Display Clock Divide Ratio/Oscillator Frequency
-        0xA8, 0x3F,  # Set Multiplex Ratio (1/64)
-        0xD3, 0x00,  # Set Display Offset
-        0x40,  # Set Display Start Line
-        0x8D, 0x14,  # Charge Pump Setting (Enable)
-        0x20, 0x00,  # Set Memory Addressing Mode (Horizontal Addressing)
-        0xA1,  # Set Segment Re-map
-        0xC8,  # Set COM Output Scan Direction
-        0xDA, 0x12,  # Set COM Pins Hardware Configuration
-        0x81, 0xCF,  # Set Contrast Control
-        0xD9, 0xF1,  # Set Pre-charge Period
-        0xDB, 0x40,  # Set VCOMH Deselect Level
-        0xA4,  # Entire Display ON
-        0xA6,  # Normal Display (A6=Normal, A7=Inverse)
-        0xAF   # Display ON
-    ]
-    for cmd in commands:
-        i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00, cmd])])
+        # Envia os dados
+        print(f"Enviando: {data_to_send}")
+        uart.write(data_to_send)
 
-def ssd1306_clear():
-    """Limpa o display."""
-    buffer = [0x40] + [0x00] * 1024
-    i2c.transfer(I2C_ADDRESS, [I2C.Message(buffer)])
+        # Lê os dados recebidos
+        print("Aguardando resposta no loopback...")
+        received_data = uart.read(len(data_to_send))
+        
+        # Validação do loopback
+        if received_data == data_to_send:
+            print(f"Loopback bem-sucedido! Dados recebidos: {received_data.decode('utf-8')}")
+        else:
+            print(f"Erro no loopback.\nDados enviados: {data_to_send.decode('utf-8')}\nDados recebidos: {received_data.decode('utf-8')}")
 
-def ssd1306_write_text(text, x=0, y=0):
-    """
-    Escreve texto em uma posição específica.
-    - text: texto a ser exibido
-    - x: posição horizontal (0 a 127)
-    - y: posição vertical (0 a 7, cada unidade é uma página de 8 pixels)
-    """
-    # Define a posição inicial
-    commands = [
-        0xB0 + y,  # Define a página (linha vertical)
-        0x00 + (x & 0x0F),  # Define coluna baixa
-        0x10 + ((x >> 4) & 0x0F)  # Define coluna alta
-    ]
-    for cmd in commands:
-        i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00, cmd])])
+    except Exception as e:
+        print(f"Erro ao configurar ou usar UART: {e}")
+    finally:
+        # Fecha o dispositivo UART
+        uart.close()
+        print("UART fechada.")
 
-    # Constrói o buffer do texto
-    buffer = [0x40]  # Prefixo de dados
-    for char in text:
-        buffer.extend(FONT_5x8.get(char, [0x00] * 5))  # Cada caractere ocupa 5 colunas
-        buffer.append(0x00)  # Espaço entre caracteres
+if __name__ == "__main__":
+    main()
 
-    # Envia os dados
-    for i in range(0, len(buffer), 16):  # Divide em blocos de 16 bytes
-        i2c.transfer(I2C_ADDRESS, [I2C.Message(buffer[i:i+16])])
-
-# Execução
-try:
-    ssd1306_init()  # Inicializa o display
-    ssd1306_clear()  # Limpa o display
-    ssd1306_write_text("Hello, World!", x=0, y=0)  # Escreve na posição inicial
-finally:
-    i2c.close()
 
 
 
