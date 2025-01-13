@@ -35,7 +35,7 @@ from periphery import I2C
 I2C_ADDRESS = 0x3C
 
 # Configuração do barramento I2C (substitua "/dev/i2c-1" pelo seu barramento I2C)
-i2c = I2C("/dev/i2c-1")
+i2c = I2C("/dev/i2c-2")
 
 # Inicialização do SSD1306
 def ssd1306_init():
