@@ -17,7 +17,7 @@ SSD1306
 # # from oled_text import OledText
 
 # # Open i2c-0 controller
-# i2c = I2C("/dev/i2c-0")
+# i2c = I2C("/dev/i2c-2")
 
 # # Read byte at address 0x100 of EEPROM at 0x78
 # msgs = [I2C.Message([0x01, 0x00]), I2C.Message([0x00], read=True)]
@@ -31,7 +31,7 @@ SSD1306
 # from oled_text import OledText
 
 # # Open i2c-0 controller
-# i2c = I2C("/dev/i2c-0")
+# i2c = I2C("/dev/i2c-2")
 
 
 # # Create the display, pass its pixel dimensions
@@ -47,11 +47,12 @@ from periphery import I2C
 import time
 
 # Configurações
-I2C_BUS = "/dev/i2c-1"  # Substitua pelo seu barramento I²C
+I2C_BUS = "/dev/i2c-2"  # Substitua pelo seu barramento I²C
 I2C_ADDRESS = 0x38      # Endereço do AHT10
 
 # Inicialização do barramento I2C
 i2c = I2C(I2C_BUS)
+I2C
 
 def aht10_init():
     """Inicializa o sensor AHT10."""
