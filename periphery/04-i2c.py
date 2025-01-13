@@ -7,6 +7,8 @@ Pinos ttyS0
 -I2C0_SCLK: Header 08 - GPIOC27
 -I2C0_DATA: Header 10 - GPIOC26
 
+sudo chmod a+rw /dev/i2c-*
+
 sudo apt-get install -y i2c-tools  # Instale a ferramenta, se necessário
 i2cdetect -y 1  # Substitua "1" pelo número do barramento listado anteriormente
 
