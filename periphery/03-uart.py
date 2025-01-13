@@ -23,7 +23,7 @@ try:
     while(1):
         data_to_send = input("Dado a enviar: ").encode('utf-8')
         serial.write(data_to_send)
-        data_readed = serial.read(128, 0.5).decode('utf-8')
+        data_readed = serial.read(len(data_to_send)).decode('utf-8')
         print(data_readed)
 finally:
     serial.close()
