@@ -6,19 +6,17 @@ $ sudo chown caninos /dev/gpiochip*
 $ sudo chmod g+rw /dev/gpiochip*
  
 """
-
-from periphery import GPIO
-import time
-
 #/dev/gpiochip0 - A
 #/dev/gpiochip1 - B
 #/dev/gpiochip2 - C
 #/dev/gpiochip3 - D
 #/dev/gpiochip4 - E
 
-# Open LED - GPIO /dev/gpiochip0 line 17 with input direction
-led = GPIO("/dev/gpiochip4", 2, "out") # GPIO-E2 (Header-5)
+from periphery import GPIO
+import time
 
+# Configura a variável LED - como na GPIO /dev/gpiochip4 (E) linha 2 como saída - GPIO-E2 (Header-5)
+led = GPIO("/dev/gpiochip4", 2, "out") # 
 while True:
     led.write(True) 
     time.sleep(1) 

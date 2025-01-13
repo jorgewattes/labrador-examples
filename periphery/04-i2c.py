@@ -7,9 +7,8 @@ Pinos ttyS0
 -I2C0_SCLK: Header 08 - GPIOC27
 -I2C0_DATA: Header 10 - GPIOC26
 
-
-Instalar a biblioteca OledText
-$ pip install oled-text
+sudo apt-get install -y i2c-tools  # Instale a ferramenta, se necessário
+i2cdetect -y 1  # Substitua "1" pelo número do barramento listado anteriormente
 
 SSD1306
 """
@@ -57,14 +56,14 @@ i2c = I2C(I2C_BUS)
 def aht10_init():
     """Inicializa o sensor AHT10."""
     init_command = [0xE1, 0x08, 0x00]  # Comando para inicializar o AHT10
-    i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00] + init_command)])  # Envia comando de inicialização
+    i2c.transfer(I2C_ADDRESS, init_command)  # Envia comando de inicialização
     time.sleep(0.02)  # Aguarde 20ms para estabilização
 
 def aht10_read():
     """Lê temperatura e umidade do sensor AHT10."""
     # Envia comando para iniciar medição
     measure_command = [0xAC, 0x33, 0x00]
-    i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00] + measure_command)])
+    i2c.transfer(I2C_ADDRESS, measure_command)
     time.sleep(0.08)  # Aguarde 80ms para conversão
 
     # Lê os 6 bytes de dados do sensor

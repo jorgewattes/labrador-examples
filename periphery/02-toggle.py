@@ -41,27 +41,26 @@ Com essas configurações, as permissões para o GPIO serão aplicadas automatic
 
 """
 
-
-from periphery import GPIO
-import time
-
 #/dev/gpiochip0 - A
 #/dev/gpiochip1 - B
 #/dev/gpiochip2 - C
 #/dev/gpiochip3 - D
 #/dev/gpiochip4 - E
 
-# Open LED - GPIO /dev/gpiochip0 line 17 with input direction
-led = GPIO("/dev/gpiochip4", 2, "out") # GPIO-E2 (Header-5)
+from periphery import GPIO
+import time
 
-# Open Button - GPIO /dev/gpiochip0 line 3 with output direction
-button = GPIO("/dev/gpiochip4", 3, "in", bias="pull_up") # GPIO-E3 (Header-3)
+# Configura o pino LED - GPIO /dev/gpiochip4; linha 2 (E2) como saída - GPIO-E2 (Header-5)
+led = GPIO("/dev/gpiochip4", 2, "out") 
+
+# Configura o pino Button - GPIO /dev/gpiochip4 line 3 (E3) como entrada - GPIO-E3 (Header-3)
+button = GPIO("/dev/gpiochip4", 3, "in", bias="pull_up") 
 
 try:
     while(1):  
-        if(not button.read()): # If button pressed:
+        if(not button.read()): # Botão pressionado:
             led.write(not led.read()) 
-            time.sleep(0.3) # Delay to bounce filter
+            time.sleep(0.3) # Filtragem de bounce
 finally:
     button.close()
     led.close()
