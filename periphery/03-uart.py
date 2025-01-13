@@ -21,7 +21,7 @@ serial = Serial("/dev/ttyS0", 115200)
 # Read up to 128 bytes with 500ms timeout
 try:
     while(1):
-        data_to_send = input("Dado a enviar: ")
+        data_to_send = input("Dado a enviar: ").encode('utf-8')
         serial.write(data_to_send)
         data_readed = serial.read(128, 0.5)
         print(data_readed)
