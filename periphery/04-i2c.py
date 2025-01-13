@@ -56,14 +56,14 @@ i2c = I2C(I2C_BUS)
 def aht10_init():
     """Inicializa o sensor AHT10."""
     init_command = [0xE1, 0x08, 0x00]  # Comando para inicializar o AHT10
-    i2c.transfer(I2C_ADDRESS, init_command)  # Envia comando de inicialização
+    i2c.transfer(I2C_ADDRESS, I2C.Message(init_command))  # Envia comando de inicialização
     time.sleep(0.02)  # Aguarde 20ms para estabilização
 
 def aht10_read():
     """Lê temperatura e umidade do sensor AHT10."""
     # Envia comando para iniciar medição
     measure_command = [0xAC, 0x33, 0x00]
-    i2c.transfer(I2C_ADDRESS, measure_command)
+    i2c.transfer(I2C_ADDRESS, I2C.Message(measure_command))
     time.sleep(0.08)  # Aguarde 80ms para conversão
 
     # Lê os 6 bytes de dados do sensor
