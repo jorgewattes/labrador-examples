@@ -48,7 +48,7 @@ SSD1306
 from periphery import I2C
 
 # Endereço I2C do display SSD1306
-I2C_ADDRESS = 0x78
+I2C_ADDRESS = 0x3C
 
 # Configuração do barramento I2C (substitua "/dev/i2c-1" pelo seu barramento I2C)
 i2c = I2C("/dev/i2c-0")
