@@ -34,11 +34,24 @@ from periphery import I2C
 # Endereço I2C do display SSD1306
 I2C_ADDRESS = 0x3C
 
-# Configuração do barramento I2C (substitua "/dev/i2c-1" pelo seu barramento I2C)
+# Configuração do barramento I2C
 i2c = I2C("/dev/i2c-2")
 
-# Inicialização do SSD1306
+# Fonte simples de 5x8 pixels para caracteres ASCII (0x20 a 0x7F)
+FONT_5x8 = {
+    " ": [0x00, 0x00, 0x00, 0x00, 0x00],
+    "H": [0x7C, 0x12, 0x12, 0x7C, 0x00],
+    "e": [0x3C, 0x4A, 0x4A, 0x30, 0x00],
+    "l": [0x00, 0x00, 0x7E, 0x00, 0x00],
+    "o": [0x3C, 0x42, 0x42, 0x3C, 0x00],
+    "W": [0x7C, 0x02, 0x02, 0x7C, 0x00],
+    "r": [0x00, 0x7C, 0x12, 0x12, 0x00],
+    "d": [0x3C, 0x42, 0x42, 0x3C, 0x00],
+    "!": [0x00, 0x00, 0x5E, 0x00, 0x00]
+}
+
 def ssd1306_init():
+    """Inicializa o display SSD1306."""
     commands = [
         0xAE,  # Display OFF
         0xD5, 0x80,  # Set Display Clock Divide Ratio/Oscillator Frequency
@@ -47,40 +60,59 @@ def ssd1306_init():
         0x40,  # Set Display Start Line
         0x8D, 0x14,  # Charge Pump Setting (Enable)
         0x20, 0x00,  # Set Memory Addressing Mode (Horizontal Addressing)
-        0xA1,  # Set Segment Re-map (Column Address 127 is mapped to SEG0)
-        0xC8,  # Set COM Output Scan Direction (Remapped)
+        0xA1,  # Set Segment Re-map
+        0xC8,  # Set COM Output Scan Direction
         0xDA, 0x12,  # Set COM Pins Hardware Configuration
         0x81, 0xCF,  # Set Contrast Control
         0xD9, 0xF1,  # Set Pre-charge Period
         0xDB, 0x40,  # Set VCOMH Deselect Level
-        0xA4,  # Entire Display ON (Resume to RAM Content Display)
-        0xA6,  # Set Normal Display (A6=Normal, A7=Inverse)
-        0x2E,  # Deactivate Scroll
+        0xA4,  # Entire Display ON
+        0xA6,  # Normal Display (A6=Normal, A7=Inverse)
         0xAF   # Display ON
     ]
     for cmd in commands:
-        i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00, cmd])])  # Envia comando ao display
+        i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00, cmd])])
 
-# Escreve "Hello, World!" no display
-def ssd1306_draw_text(text):
-    # Limpar o display
-    buffer = [0x40] + [0x00] * 1024  # Display 128x64
+def ssd1306_clear():
+    """Limpa o display."""
+    buffer = [0x40] + [0x00] * 1024
     i2c.transfer(I2C_ADDRESS, [I2C.Message(buffer)])
 
-    # Dados para escrever "Hello, World!" (substitua por uma função de desenho mais completa se necessário)
-    hello_world = [
-        0x40,  # Indica dados de memória gráfica
-        # Adicione aqui os bytes que formam "Hello, World!" em uma fonte pequena
-        # Exemplos de bytes podem ser gerados usando ferramentas externas ou bibliotecas específicas
+def ssd1306_write_text(text, x=0, y=0):
+    """
+    Escreve texto em uma posição específica.
+    - text: texto a ser exibido
+    - x: posição horizontal (0 a 127)
+    - y: posição vertical (0 a 7, cada unidade é uma página de 8 pixels)
+    """
+    # Define a posição inicial
+    commands = [
+        0xB0 + y,  # Define a página (linha vertical)
+        0x00 + (x & 0x0F),  # Define coluna baixa
+        0x10 + ((x >> 4) & 0x0F)  # Define coluna alta
     ]
-    i2c.transfer(I2C_ADDRESS, [I2C.Message(hello_world)])
+    for cmd in commands:
+        i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00, cmd])])
+
+    # Constrói o buffer do texto
+    buffer = [0x40]  # Prefixo de dados
+    for char in text:
+        buffer.extend(FONT_5x8.get(char, [0x00] * 5))  # Cada caractere ocupa 5 colunas
+        buffer.append(0x00)  # Espaço entre caracteres
+
+    # Envia os dados
+    for i in range(0, len(buffer), 16):  # Divide em blocos de 16 bytes
+        i2c.transfer(I2C_ADDRESS, [I2C.Message(buffer[i:i+16])])
 
 # Execução
 try:
-    ssd1306_init()
-    ssd1306_draw_text("Hello, World!")
+    ssd1306_init()  # Inicializa o display
+    ssd1306_clear()  # Limpa o display
+    ssd1306_write_text("Hello, World!", x=0, y=0)  # Escreve na posição inicial
 finally:
     i2c.close()
+
+
 
 
 # from periphery import I2C
