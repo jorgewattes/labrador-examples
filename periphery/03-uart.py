@@ -16,7 +16,7 @@ from periphery import Serial
 # Open /dev/ttyUSB0 with baudrate 115200, and defaults of 8N1, no flow control
 serial = Serial("/dev/ttyS0", 115200)
 
-serial.write(b"Hello World!")
+serial.write("Hello World!")
 
 # Read up to 128 bytes with 500ms timeout
 try:
