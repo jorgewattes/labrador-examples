@@ -16,12 +16,14 @@ from periphery import Serial
 # Open /dev/ttyUSB0 with baudrate 115200, and defaults of 8N1, no flow control
 serial = Serial("/dev/ttyS0", 115200)
 
-serial.write("Hello World!")
+
 
 # Read up to 128 bytes with 500ms timeout
 try:
     while(1):
-        buf = serial.read(128, 0.5)
-        print(buf)
+        data_to_send = input("Dado a enviar: ")
+        serial.write(data_to_send)
+        data_readed = serial.read(128, 0.5)
+        print(data_readed)
 finally:
     serial.close()
