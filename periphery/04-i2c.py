@@ -29,44 +29,50 @@ SSD1306
 # i2c.close()
 
 
-from periphery import Serial
+from periphery import I2C
 
-def main():
-    # Configure o dispositivo UART (substitua '/dev/ttyS0' pelo dispositivo correto no Labrador)
-    uart_device = "/dev/ttyS0"
-    baudrate = 9600
+# Endereço I2C do display SSD1306
+I2C_ADDRESS = 0x3C
 
-    # Inicializa a UART
-    try:
-        uart = Serial(uart_device, baudrate)
-        print(f"UART configurada no dispositivo {uart_device} a {baudrate} baud.")
+# Configuração do barramento I2C
+i2c = I2C("/dev/i2c-2")
 
-        # Recebe os dados do usuário
-        data_to_send = input("Digite os dados a serem enviados no loopback: ").encode('utf-8')
+def ssd1306_init():
+    """Inicializa o display SSD1306."""
+    commands = [
+        0xAE,  # Display OFF
+        0xD5, 0x80,  # Set Display Clock Divide Ratio/Oscillator Frequency
+        0xA8, 0x3F,  # Set Multiplex Ratio (1/64)
+        0xD3, 0x00,  # Set Display Offset
+        0x40,  # Set Display Start Line
+        0x8D, 0x14,  # Charge Pump Setting (Enable)
+        0x20, 0x00,  # Set Memory Addressing Mode (Horizontal Addressing)
+        0xA1,  # Set Segment Re-map
+        0xC8,  # Set COM Output Scan Direction
+        0xDA, 0x12,  # Set COM Pins Hardware Configuration
+        0x81, 0xCF,  # Set Contrast Control
+        0xD9, 0xF1,  # Set Pre-charge Period
+        0xDB, 0x40,  # Set VCOMH Deselect Level
+        0xA4,  # Entire Display ON
+        0xA6,  # Normal Display (A6=Normal, A7=Inverse)
+        0xAF   # Display ON
+    ]
+    for cmd in commands:
+        i2c.transfer(I2C_ADDRESS, [I2C.Message([0x00, cmd])])
 
-        # Envia os dados
-        print(f"Enviando: {data_to_send}")
-        uart.write(data_to_send)
+def ssd1306_clear():
+    """Limpa o display."""
+    buffer = [0x40] + [0x00] * 1024  # Prefixo seguido de zeros
+    chunk_size = 16  # Divisão em blocos
+    for i in range(0, len(buffer), chunk_size):
+        chunk = buffer[i:i+chunk_size]
+        i2c.transfer(I2C_ADDRESS, [I2C.Message(chunk)])
 
-        # Lê os dados recebidos
-        print("Aguardando resposta no loopback...")
-        received_data = uart.read(len(data_to_send))
-        
-        # Validação do loopback
-        if received_data == data_to_send:
-            print(f"Loopback bem-sucedido! Dados recebidos: {received_data.decode('utf-8')}")
-        else:
-            print(f"Erro no loopback.\nDados enviados: {data_to_send.decode('utf-8')}\nDados recebidos: {received_data.decode('utf-8')}")
-
-    except Exception as e:
-        print(f"Erro ao configurar ou usar UART: {e}")
-    finally:
-        # Fecha o dispositivo UART
-        uart.close()
-        print("UART fechada.")
-
-if __name__ == "__main__":
-    main()
+try:
+    ssd1306_init()  # Inicializa o display
+    ssd1306_clear()  # Limpa o display
+finally:
+    i2c.close()
 
 
 
