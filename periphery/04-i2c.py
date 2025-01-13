@@ -48,8 +48,8 @@ from periphery import I2C
 import time
 
 # Configurações
-I2C_BUS = "/dev/i2c-0"  # Substitua pelo seu barramento I²C
-I2C_ADDRESS = 0x38 >>1      # Endereço do AHT10
+I2C_BUS = "/dev/i2c-1"  # Substitua pelo seu barramento I²C
+I2C_ADDRESS = 0x38      # Endereço do AHT10
 
 # Inicialização do barramento I2C
 i2c = I2C(I2C_BUS)
