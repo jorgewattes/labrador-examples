@@ -24,14 +24,14 @@ pwm.enable()
 
 inc=True
 
-try:
-    while(1):
-        if(inc):
-            pwm.duty_cycle = pwm.duty_cycle + 0.10
-            inc=False if pwm.duty_cycle>=1.0 else True
-        else:
-            pwm.duty_cycle = pwm.duty_cycle - 0.10
-            inc=True if pwm.duty_cycle<=0.0 else False
-        time.sleep(1)
-finally:
-    pwm.close()
+# try:
+#     while(1):
+#         if(inc):
+#             pwm.duty_cycle = pwm.duty_cycle + 0.10
+#             inc=False if pwm.duty_cycle>=1.0 else True
+#         else:
+#             pwm.duty_cycle = pwm.duty_cycle - 0.10
+#             inc=True if pwm.duty_cycle<=0.0 else False
+#         time.sleep(1)
+# finally:
+#     pwm.close()
