@@ -15,7 +15,7 @@ from periphery import PWM
 #pwm = PWM(2, 1)
 
 # Open PWM chip 1, channel 8 - GPIO-B8 (header-12)
-pwm = PWM(1,8) 
+pwm = PWM("/dev/gpiochip1",8) 
 pwm.frequency = 1e3 # Set frequency to 1 kHz
 pwm.duty_cycle = 0.75 # Set duty cycle to 75%
 pwm.enable()
