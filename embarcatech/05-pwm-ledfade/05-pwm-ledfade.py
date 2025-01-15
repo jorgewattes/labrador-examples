@@ -11,7 +11,7 @@ $ sudo chmod g+rw /dev/gpiochip*
 
 import os
 import time
-from periphery import PWMM
+from periphery import PWM
 
 # Função para exportar o canal PWM automaticamente
 def export_pwm(chip, channel):
@@ -21,7 +21,7 @@ def export_pwm(chip, channel):
     # Verifica se o canal já está exportado
     if not os.path.exists(pwm_path):
         try:
-            with open(export_path, "w") as f:
+            with open(export_path, "w") as f:s
                 f.write(str(channel))
             print(f"Canal {channel} do chip {chip} exportado com sucesso.")
         except PermissionError:
