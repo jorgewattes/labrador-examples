@@ -21,7 +21,7 @@ def export_pwm(chip, channel):
     # Verifica se o canal já está exportado
     if not os.path.exists(pwm_path):
         try:
-            with open(export_path, "w") as f:s
+            with open(export_path, "w") as f:
                 f.write(str(channel))
             print(f"Canal {channel} do chip {chip} exportado com sucesso.")
         except PermissionError:
