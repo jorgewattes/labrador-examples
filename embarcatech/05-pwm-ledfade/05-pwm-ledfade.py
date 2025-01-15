@@ -44,8 +44,8 @@ try:
     while True:
         # Incrementa ou decrementa o duty cycle
         if inc:
-            pwm.duty_cycle = min(pwm.duty_cycle + 0.05, 0.7)  # Limita a 100%
-            inc = False if pwm.duty_cycle >= 0.7 else True
+            pwm.duty_cycle = min(pwm.duty_cycle + 0.05, 0.5)  # Limita a 100%
+            inc = False if pwm.duty_cycle >= 0.5 else True
         else:
             pwm.duty_cycle = max(pwm.duty_cycle - 0.05, 0.0)  # Limita a 0%
             inc = True if pwm.duty_cycle <= 0.0 else False
