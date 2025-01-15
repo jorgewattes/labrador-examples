@@ -34,7 +34,7 @@ export_pwm(chip, channel)
 
 # Inicializa o PWM com a biblioteca periphery
 pwm = PWM(chip, channel)
-pwm.period = 0.02  # 20 ms (50 Hz)
+pwm.__format__ = 100  # 20 ms (50 Hz)
 pwm.duty_cycle = 0.05  # 5% duty cycle
 pwm.enable()
 
@@ -44,14 +44,14 @@ try:
     while True:
         # Incrementa ou decrementa o duty cycle
         if inc:
-            pwm.duty_cycle = min(pwm.duty_cycle + 0.10, 1.0)  # Limita a 100%
+            pwm.duty_cycle = min(pwm.duty_cycle + 0.02, 1.0)  # Limita a 100%
             inc = False if pwm.duty_cycle >= 1.0 else True
         else:
-            pwm.duty_cycle = max(pwm.duty_cycle - 0.10, 0.0)  # Limita a 0%
+            pwm.duty_cycle = max(pwm.duty_cycle - 0.02, 0.0)  # Limita a 0%
             inc = True if pwm.duty_cycle <= 0.0 else False
 
         # Espera antes de alterar o ciclo
-        time.sleep(1)
+        time.sleep(0.1)
 
 except KeyboardInterrupt:
     # Garante que o PWM seja desativado ao sair
