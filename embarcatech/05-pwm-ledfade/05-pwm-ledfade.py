@@ -47,8 +47,8 @@ try:
             pwm.duty_cycle = min(pwm.duty_cycle + 0.01, 0.5)  # Limita a 100%
             inc = False if pwm.duty_cycle >= 0.5 else True
         else:
-            pwm.duty_cycle = max(pwm.duty_cycle - 0.01, 0.0)  # Limita a 0%
-            inc = True if pwm.duty_cycle <= 0.0 else False
+            pwm.duty_cycle = max(pwm.duty_cycle - 0.01, 0.35)  # Limita a 0%
+            inc = True if pwm.duty_cycle <= 0.35 else False
 
         # Espera antes de alterar o ciclo
         time.sleep(0.025)
