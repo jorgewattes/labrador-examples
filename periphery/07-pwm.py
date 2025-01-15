@@ -9,29 +9,51 @@ $ sudo chown caninos /dev/gpiochip*
 $ sudo chmod g+rw /dev/gpiochip*
 """
 
+import os
 import time
 from periphery import PWM
 
+# Função para exportar o canal PWM automaticamente
+def export_pwm(chip, channel):
+    export_path = f"/sys/class/pwm/pwmchip{chip}/export"
+    pwm_path = f"/sys/class/pwm/pwmchip{chip}/pwm{channel}"
 
-# Open PWM chip 2, channel 1 - GPIO-A27 (header-5)
-#pwm = PWM(2, 1)
+    # Verifica se o canal já está exportado
+    if not os.path.exists(pwm_path):
+        try:
+            with open(export_path, "w") as f:
+                f.write(str(channel))
+            print(f"Canal {channel} do chip {chip} exportado com sucesso.")
+        except PermissionError:
+            raise PermissionError("Permissões insuficientes para exportar o PWM. Execute como root ou ajuste as permissões.")
 
-# Open PWM chip 1, channel 8 - GPIO-B8 (header-12)
-pwm = PWM(0,0) 
-pwm.period = 1/200 # Set frequency to 1 kHz
-pwm.duty_cycle = 0.5 # Set duty cycle to 75%
+# Exporta e inicializa o PWM no chip 0, canal 0
+chip = 0
+channel = 0
+export_pwm(chip, channel)
+
+# Inicializa o PWM com a biblioteca periphery
+pwm = PWM(chip, channel)
+pwm.period = 0.02  # 20 ms (50 Hz)
+pwm.duty_cycle = 0.05  # 5% duty cycle
 pwm.enable()
 
-inc=True
+inc = True
 
-# try:
-#     while(1):
-#         if(inc):
-#             pwm.duty_cycle = pwm.duty_cycle + 0.10
-#             inc=False if pwm.duty_cycle>=1.0 else True
-#         else:
-#             pwm.duty_cycle = pwm.duty_cycle - 0.10
-#             inc=True if pwm.duty_cycle<=0.0 else False
-#         time.sleep(1)
-# finally:
-#     pwm.close()
+try:
+    while True:
+        # Incrementa ou decrementa o duty cycle
+        if inc:
+            pwm.duty_cycle = min(pwm.duty_cycle + 0.10, 1.0)  # Limita a 100%
+            inc = False if pwm.duty_cycle >= 1.0 else True
+        else:
+            pwm.duty_cycle = max(pwm.duty_cycle - 0.10, 0.0)  # Limita a 0%
+            inc = True if pwm.duty_cycle <= 0.0 else False
+
+        # Espera antes de alterar o ciclo
+        time.sleep(1)
+
+except KeyboardInterrupt:
+    # Garante que o PWM seja desativado ao sair
+    pwm.disable()
+    pwm.close()
