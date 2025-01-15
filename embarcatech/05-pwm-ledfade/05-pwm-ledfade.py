@@ -44,14 +44,14 @@ try:
     while True:
         # Incrementa ou decrementa o duty cycle
         if inc:
-            pwm.duty_cycle = min(pwm.duty_cycle + 0.1, 1.0)  # Limita a 100%
-            inc = False if pwm.duty_cycle >= 1.0 else True
+            pwm.duty_cycle = min(pwm.duty_cycle + 0.05, 0.7)  # Limita a 100%
+            inc = False if pwm.duty_cycle >= 0.7 else True
         else:
-            pwm.duty_cycle = max(pwm.duty_cycle - 0.1, 0.0)  # Limita a 0%
+            pwm.duty_cycle = max(pwm.duty_cycle - 0.05, 0.0)  # Limita a 0%
             inc = True if pwm.duty_cycle <= 0.0 else False
 
         # Espera antes de alterar o ciclo
-        time.sleep(0.1)
+        time.sleep(0.05)
 
 except KeyboardInterrupt:
     # Garante que o PWM seja desativado ao sair
