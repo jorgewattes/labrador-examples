@@ -42,10 +42,10 @@ client.connect(BROKER, PORT)
 
 # Mantendo o cliente MQTT ativo
 try:
-    client.loop_start()  # Loop em segundo plano para MQTT
-    print("Pressione o botão para enviar o caractere.")
-    send_character(input('Texto'))
-    # button.wait_for_press()  # Aguarda eventos do botão
+    while True:
+        client.loop_start()  # Loop em segundo plano para MQTT
+        send_character(input('Texto'))
+# button.wait_for_press()  # Aguarda eventos do botão
 except KeyboardInterrupt:
     print("\nEncerrando...")
     client.loop_stop()
