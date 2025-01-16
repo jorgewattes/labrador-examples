@@ -1,5 +1,6 @@
 # from gpiozero import Button
 import paho.mqtt.client as mqtt
+import time
 
 # Configurações do broker HiveMQ Cloud
 BROKER = "dc48fcba406f4ae480f508359ef51e75.s1.eu.hivemq.cloud"  # Substitua pelo seu broker
@@ -36,7 +37,7 @@ client.on_connect = on_connect
 # Conectando ao broker
 print("Conectando ao HiveMQ Cloud...")
 client.connect(BROKER, PORT, 60)
-
+time.sleep(1)
 # Associando o evento do botão à função
 # button.when_pressed = send_character
 
