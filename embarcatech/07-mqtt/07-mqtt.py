@@ -26,7 +26,7 @@ def send_character(character):
     print(f"Caractere '{character}' enviado!")
 
 # Configurando o cliente MQTT
-client = mqtt.Client()
+client = mqtt.Client(client_id="Labrador_Client", protocol=mqtt.MQTTv311)
 client.username_pw_set(USERNAME, PASSWORD)  # Autenticação
 client.tls_set()  # Conexão segura (SSL/TLS)
 
