@@ -57,3 +57,6 @@ except KeyboardInterrupt:
     # Garante que o PWM seja desativado ao sair
     pwm.disable()
     pwm.close()
+
+
+

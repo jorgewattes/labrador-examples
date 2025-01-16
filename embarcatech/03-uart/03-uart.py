@@ -16,11 +16,8 @@ from periphery import Serial
 # Configura a serial /dev/ttyUSB0 com baudrate 9600
 serial = Serial("/dev/ttyS0", 9600)
 
-try:
-    while(1):
-        data_to_send = input("Dado a enviar: ").encode('utf-8')
-        serial.write(data_to_send)
-        data_readed = serial.read(len(data_to_send)).decode('utf-8')
-        print(f'Dado recebido:{data_readed}')
-finally:
-    serial.close()
+while(1):
+    data_to_send = input("Dado a enviar: ").encode('utf-8')
+    serial.write(data_to_send)
+    data_readed = serial.read(len(data_to_send)).decode('utf-8')
+    print(f'Dado recebido:{data_readed}')
