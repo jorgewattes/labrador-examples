@@ -13,7 +13,7 @@ TOPIC = "embarcatech"  # Tópico para envio
 # button = Button(BUTTON_PIN)
 
 # Callback para conexão bem-sucedida
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties):
     if rc == 0:
         print("Conectado ao HiveMQ com sucesso!")
     else:
