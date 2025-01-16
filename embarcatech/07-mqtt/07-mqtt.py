@@ -1,4 +1,3 @@
-# from gpiozero import Button
 import paho.mqtt.client as mqtt
 import time
 
@@ -9,16 +8,6 @@ USERNAME = "hivemq.webclient.1736993320918"  # Substitua pelo seu usuário
 PASSWORD = "5J1a0>Mi$oW2:@PjTLqc"  # Substitua pela sua senha
 TOPIC = "embarcatech"  # Tópico para envio
 
-# Configuração do botão (GPIO)
-# BUTTON_PIN = 17  # Substitua pelo pino GPIO ao qual o botão está conectado
-# button = Button(BUTTON_PIN)
-
-# Callback para conexão bem-sucedida
-def on_connect(client, userdata, flags, rc, properties):
-    if rc == 0:
-        print("Conectado ao HiveMQ com sucesso!")
-    else:
-        print(f"Erro de conexão: {rc}")
 
 # Função para enviar mensagem ao pressionar o botão
 def send_character(character):
@@ -31,22 +20,15 @@ client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="Labrador_Clien
 client.username_pw_set(USERNAME, PASSWORD)  # Autenticação
 client.tls_set()  # Conexão segura (SSL/TLS)
 
-# Configurando callback
-client.on_connect = on_connect
-
 # Conectando ao broker
 print("Conectando ao HiveMQ Cloud...")
 client.connect(BROKER, PORT, 60)
-time.sleep(1)
-# Associando o evento do botão à função
-# button.when_pressed = send_character
 
 # Mantendo o cliente MQTT ativo
 try:
     while True:
         client.loop_start()  # Loop em segundo plano para MQTT
         send_character(input('Escreva um texto para o MQTT: '))
-# button.wait_for_press()  # Aguarda eventos do botão
 except KeyboardInterrupt:
     print("\nEncerrando...")
     client.loop_stop()
